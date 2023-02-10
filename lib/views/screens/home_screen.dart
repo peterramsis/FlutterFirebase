@@ -281,6 +281,48 @@ class _HomeScreenState extends State<HomeScreen> {
                                        ))
                                      ],
                                    ),
+                                 ),
+                                 Padding(
+                                   padding: const EdgeInsets.symmetric(
+                                       vertical: 10
+                                   ),
+                                   child: Container(
+                                     width: double.infinity,
+                                     height: 2,
+                                     color: Colors.grey[300],
+                                   ),
+                                 ),
+                                 Row(
+                                   children: [
+
+                                     CircleAvatar(
+                                       backgroundImage: NetworkImage("https://img.freepik.com/free-photo/close-up-young-successful-man-smiling-camera-standing-casual-outfit-against-blue-background_1258-66609.jpg"),
+                                       radius: 20.0,
+                                     ),
+                                     SizedBox(
+                                       width: 5,
+                                     ),
+                                    Expanded(child:  TextFormField(
+                                      decoration: InputDecoration(
+                                        // label: Text("Write a comment"),
+                                        labelText: "Write a comment"
+                                      ),
+                                    )),
+
+                                     InkWell(
+                                       child: Row(children: [
+                                         Icon(Icons.heart_broken , color: defaultColor,),
+                                         SizedBox(
+                                           width: 4,
+                                         ),
+                                         Text("120", style: Theme.of(context).textTheme.caption!.copyWith(
+                                             color: defaultColor
+                                         ),),
+                                       ],),
+                                     )
+
+
+                                   ],
                                  )
                                ],
                              ),

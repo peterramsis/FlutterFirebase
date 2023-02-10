@@ -4,6 +4,7 @@ import 'package:firebase_app/controller/Cubit/App/CubitApp.dart';
 import 'package:firebase_app/controller/Cubit/App/StatesApp.dart';
 import 'package:firebase_app/views/component/LoginWidget.dart';
 import 'package:firebase_app/views/component/RegisterWidget.dart';
+import 'package:firebase_app/views/screens/add_post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
@@ -42,7 +43,8 @@ class DashboardScreen extends StatelessWidget {
              items: [
                BottomNavigationBarItem(icon: Icon(IconBroken.Home)  , label: "Home"),
                BottomNavigationBarItem(icon: Icon(IconBroken.Chat)  , label: "Chat"),
-                BottomNavigationBarItem(icon: Icon(IconBroken.Setting)  , label: "Setting"),
+               BottomNavigationBarItem(icon: Icon(IconBroken.Arrow___Down_Circle)  , label: "Post"),
+               BottomNavigationBarItem(icon: Icon(IconBroken.Setting)  , label: "Setting"),
                BottomNavigationBarItem(icon: Icon(IconBroken.Profile)  , label: "Profile"),
              ],
            ),
@@ -50,6 +52,7 @@ class DashboardScreen extends StatelessWidget {
        },
       listener: (context , state){
          print(state);
+
       },
     );
   }

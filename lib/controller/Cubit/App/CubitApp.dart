@@ -2,6 +2,7 @@
 
 import 'package:firebase_app/Model/User.dart';
 import 'package:firebase_app/controller/Cubit/App/StatesApp.dart';
+import 'package:firebase_app/views/screens/add_post_screen.dart';
 import 'package:firebase_app/views/screens/chat_screen.dart';
 import 'package:firebase_app/views/screens/home_screen.dart';
 import 'package:firebase_app/views/screens/profile_screen.dart';
@@ -18,7 +19,7 @@ class CubitApp extends Cubit<StatesApp>
 
   CubitApp get(context)=> BlocProvider.of(context);
   UserModel? user;
-  int? currentIndexBottom = 1;
+  int? currentIndexBottom = 0;
 
   List<Map<String,dynamic>> pages = [
     {
@@ -28,6 +29,10 @@ class CubitApp extends Cubit<StatesApp>
     {
       "page" :    ChatScreen(),
       "title" : "Chat",
+    },
+    {
+      "page" :    AddPostScreen(),
+      "title" : "Add Post",
     },
     {
       "page" :    SettingsScreen(),
