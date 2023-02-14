@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:firebase_app/Model/User.dart';
 import 'package:firebase_app/controller/Cubit/App/StatesApp.dart';
 import 'package:firebase_app/views/screens/add_post_screen.dart';
@@ -7,19 +9,30 @@ import 'package:firebase_app/views/screens/chat_screen.dart';
 import 'package:firebase_app/views/screens/home_screen.dart';
 import 'package:firebase_app/views/screens/profile_screen.dart';
 import 'package:firebase_app/views/screens/settings_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../../../Shard/local/CacheHelper.dart';
 class CubitApp extends Cubit<StatesApp>
 {
-  CubitApp() : super(StateAppInit());
+   CubitApp() : super(StateAppInit());
 
   UserModel? userModel;
 
-  CubitApp get(context)=> BlocProvider.of(context);
+
+
+   static CubitApp get(context)=> BlocProvider.of(context);
   UserModel? user;
   int? currentIndexBottom = 0;
+  var  picker = ImagePicker();
+  File? imageProfile;
+   File? imageCover;
+  TextEditingController name = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController bio = TextEditingController();
+  TextEditingController address = TextEditingController();
 
   List<Map<String,dynamic>> pages = [
     {
@@ -60,5 +73,37 @@ class CubitApp extends Cubit<StatesApp>
 
 
 
+   Future<void> getImageProfile() async{
+     var image = await picker.pickImage(source: ImageSource.gallery);
+
+   if(image  != null){
+     imageProfile = File(image.path);
+     emit(StateAppProfilePicturePickedSuccess());
+   }
+     emit(StateAppProfilePicturePickedError());
+
+  }
+
+   Future<void> getImageCover() async{
+     var image = await picker.pickImage(source: ImageSource.gallery);
+
+     if(image  != null){
+       imageCover = File(image.path);
+       emit(StateAppProfilePicturePickedSuccess());
+     }
+     emit(StateAppProfilePicturePickedError());
+
+   }
+
+
+   uploadProfileImage(){
+    print("start upload");
+      final storage = FirebaseStorage.instance.ref().child("user/${Uri.file(imageProfile!.path).pathSegments.last}").putFile(imageProfile!).then(((value){
+        print("upload");
+         value.ref.getDownloadURL().then((value) => print(value)).catchError((err)=> print(err));
+      })).catchError((err){
+        print(err);
+      });
+   }
 
 }

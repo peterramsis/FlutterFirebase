@@ -33,7 +33,10 @@ class CubitAuth extends Cubit<StatesAuth>{
             email: email.text,
             phone: phone.text,
             address: address.text,
-            uid: value.user!.uid
+            uid: value.user!.uid,
+            cover: "https://img.freepik.com/free-photo/hesitant-puzzled-unshaven-man-shruggs-shoulders-bewilderment-feels-indecisive-has-bristle-trendy-haircut-dressed-blue-stylish-shirt-isolated-white-wall-clueless-male-poses-indoor_273609-16518.jpg",
+            image: "https://img.freepik.com/free-photo/waist-up-portrait-handsome-serious-unshaven-male-keeps-hands-together-dressed-dark-blue-shirt-has-talk-with-interlocutor-stands-against-white-wall-self-confident-man-freelancer_273609-16320.jpg",
+            bio : "Write here anything"
           );
           emit(StatesRegisterSuccess());
         });
@@ -46,8 +49,8 @@ class CubitAuth extends Cubit<StatesAuth>{
 
   }
 
-  userCreate({required String name , required String phone ,required String address ,required String uid , required String email}){
-    user = UserModel(name, address, phone,uid, email);
+  userCreate({required String name , required String phone ,required String address ,required String uid , required String email,required String cover , required String image ,required String bio}){
+    user = UserModel(name, address, phone,uid, email, cover , image , bio);
     FirebaseFirestore.instance.collection("users").doc(uid).set(user!.toMap()).then((value) => print("done")).catchError((error) =>  emit(StatesRegisterError(error.toString())));
   }
 

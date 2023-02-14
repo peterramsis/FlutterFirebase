@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
                child: CircularProgressIndicator(),
              );
            },
-           condition: CubitApp().get(context).userModel != null,
+           condition: CubitApp.get(context).userModel != null,
            builder:  (context) {
              return SingleChildScrollView(
                child: Column(

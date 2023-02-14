@@ -53,8 +53,8 @@ class MyApp extends StatelessWidget {
           // in the middle of the parent.
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) =>  CubitAuth()),
-              BlocProvider(create: (_) => CubitApp()..getUser())
+              BlocProvider(create: ( BuildContext  context) =>  CubitAuth()),
+              BlocProvider(create: (BuildContext  context) => CubitApp()..getUser())
             ],
             child:  widget,
           ),

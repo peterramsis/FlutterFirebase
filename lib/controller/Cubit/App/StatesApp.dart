@@ -9,6 +9,7 @@ class StateAppGetUserSuccess  extends StatesApp{
 }
 
 class StateAppGetUserLoading extends StatesApp{}
-class StateAppChangeBottomNavigationBar extends StatesApp{
-
-}
+class StateAppChangeBottomNavigationBar extends StatesApp{}
+class StateAppProfilePicturePickedSuccess extends StatesApp{}
+class StateAppProfilePicturePickedloading extends StatesApp{}
+class StateAppProfilePicturePickedError extends StatesApp{}

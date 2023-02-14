@@ -16,7 +16,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<CubitApp, StatesApp>(
        builder: (context , state){
-         var cubit = CubitApp().get(context);
+         var cubit = CubitApp.get(context);
          return  Scaffold(
            appBar: AppBar(
              elevation: 0,
