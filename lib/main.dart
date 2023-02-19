@@ -9,8 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'Shard/MyBlocObserver.dart';
+import 'controller/Cubit/App/StatesApp.dart';
 void main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = MyBlocObserver();
   await Firebase.initializeApp();
   await CacheHelper.init();
 
@@ -53,10 +58,17 @@ class MyApp extends StatelessWidget {
           // in the middle of the parent.
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(create: ( BuildContext  context) =>  CubitAuth()),
-              BlocProvider(create: (BuildContext  context) => CubitApp()..getUser())
+              BlocProvider(create: (_) =>  CubitAuth()),
+              BlocProvider(create: (_) => CubitApp()..getUser(),)
             ],
-            child:  widget,
+            child:  BlocConsumer<CubitApp,StatesApp>(
+              builder: (context,state){
+                return widget;
+              },
+              listener: (context,state){
+
+              },
+            ),
           ),
         ),
         // This trailing comma makes auto-formatting nicer for build methods.

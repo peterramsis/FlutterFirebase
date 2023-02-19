@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:firebase_app/controller/Cubit/App/StatesApp.dart';
+import 'package:firebase_app/views/component/DashboardScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../controller/Cubit/App/CubitApp.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen();
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -22,7 +23,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             onPressed: (){
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             },
           ),
           title: Text("Edit Profile"),
@@ -75,7 +76,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               radius: 50,
                             ),
                           ),
-                          IconButton(onPressed: () =>CubitApp.get(context).getImageProfile(), icon: CircleAvatar(
+                          IconButton(onPressed: (){
+
+                            CubitApp.get(context).getImageProfile();
+                            // CubitApp.get(context).updateProfile();
+                          }, icon: CircleAvatar(
                             child: Icon(Icons.camera),
                           ))
                         ],
@@ -127,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       return null;
                     },
                   ),
-                 ElevatedButton(onPressed:()=> CubitApp.get(context).uploadProfileImage(), child: Text("Update", style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                 ElevatedButton(onPressed:()=> CubitApp.get(context).updateProfile(), child: Text("Update", style: Theme.of(context).textTheme.bodyText1!.copyWith(
                    color: Colors.white
                  )))
                 ],)),)
@@ -143,7 +148,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }, listener: (context, state){
 
-       print(state);
+       if(state is StateAppGetUserSuccess){
+         print(state.user.name);
+       }
 
     });
   }

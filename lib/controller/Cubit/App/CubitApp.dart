@@ -63,9 +63,11 @@ class CubitApp extends Cubit<StatesApp>
   }
 
   getUser(){
+    emit(StateAppGetUserLoading());
     FirebaseFirestore.instance.collection("users").doc(CacheHelper.getData(key: "uid")).get().then((value){
       Map<String, dynamic>? data = value.data();
       userModel = UserModel.fromJson(data!);
+      print("------data${value.data()}");
       emit(StateAppGetUserSuccess(userModel!));
 
     }).catchError((err)=>{ print(err)});
@@ -79,8 +81,10 @@ class CubitApp extends Cubit<StatesApp>
    if(image  != null){
      imageProfile = File(image.path);
      emit(StateAppProfilePicturePickedSuccess());
-   }
+   }else{
      emit(StateAppProfilePicturePickedError());
+   }
+
 
   }
 
@@ -90,20 +94,61 @@ class CubitApp extends Cubit<StatesApp>
      if(image  != null){
        imageCover = File(image.path);
        emit(StateAppProfilePicturePickedSuccess());
+     }else{
+       emit(StateAppProfilePicturePickedError());
      }
-     emit(StateAppProfilePicturePickedError());
+
 
    }
 
+   String? pathImageProfile = "";
 
-   uploadProfileImage(){
-    print("start upload");
-      final storage = FirebaseStorage.instance.ref().child("user/${Uri.file(imageProfile!.path).pathSegments.last}").putFile(imageProfile!).then(((value){
-        print("upload");
-         value.ref.getDownloadURL().then((value) => print(value)).catchError((err)=> print(err));
+   uploadProfileImage() {
+     emit(StateAppProfilePictureUploadloading());
+      final storage =  FirebaseStorage.instance.ref().child("user/${Uri.file(imageProfile!.path).pathSegments.last}").putFile(imageProfile!).then(((value){
+         value.ref.getDownloadURL().then((value) {
+           emit(StateAppProfilePictureUploadSuccess());
+           pathImageProfile = value;
+           print(pathImageProfile);
+         }).catchError((err)=> emit(StateAppProfileUpdateError(err.toString())));
       })).catchError((err){
-        print(err);
+        emit(StateAppProfilePictureUploadError(err.toString()));
       });
+   }
+
+   
+   updateProfile() async{
+
+
+     if(imageProfile != null){
+       await uploadProfileImage();
+
+      print( pathImageProfile != "" ?  pathImageProfile: userModel?.cover);
+     }
+
+
+     emit(StateAppProfileUpdateLoading());
+
+
+
+
+     print(userModel?.toMap());
+     FirebaseFirestore.instance.collection("users").doc(userModel?.uid).update( {
+       "name": name.text,
+       "phone" : userModel?.phone,
+       "bio": bio.text,
+       "email": userModel?.email,
+       "address" : userModel?.address,
+       "cover":  userModel?.cover,
+       "image":  pathImageProfile != "" ?  pathImageProfile: userModel?.image,
+       "uid" : userModel?.uid
+     }).then((value){
+       emit(StateAppGetUserSuccess(userModel!));
+       getUser();
+       print(userModel?.name);
+      }).catchError((err){
+       print(err);
+     });
    }
 
 }
