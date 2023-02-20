@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return ConditionalBuilder(
               condition: state is! StateAppGetUserLoading && CubitApp.get(context).userModel != null,
             builder: (context){
-              var userModel = CubitApp.get(context).userModel;
+              var userModel = context.read<CubitApp>().userModel;
                 return Container(
                   child: Column(
                     children: [

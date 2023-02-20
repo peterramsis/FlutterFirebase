@@ -18,16 +18,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<CubitApp,StatesApp>(builder: (context, state){
 
-      return Scaffold(
+      return WillPopScope(child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: (){
-              Navigator.of(context).pop();
-            },
-          ),
-          title: Text("Edit Profile"),
-          centerTitle: true ),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: (){
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context)=> BlocProvider(create: (context) => CubitApp()..getUser()..changeCurrentIndexBottom(4),child:  DashboardScreen()))
+                );
+              },
+            ),
+            title: Text("Edit Profile"),
+            centerTitle: true ),
         body: ConditionalBuilder(
           condition: state is! StateAppGetUserLoading && CubitApp.get(context).userModel != null,
           builder: (context){
@@ -132,9 +134,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       return null;
                     },
                   ),
-                 ElevatedButton(onPressed:()=> CubitApp.get(context).updateProfile(), child: Text("Update", style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                   color: Colors.white
-                 )))
+                  ElevatedButton(onPressed:()=> CubitApp.get(context).updateProfile(), child: Text("Update", style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Colors.white
+                  )))
                 ],)),)
               ],
             );
@@ -145,7 +147,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             );
           },
         ),
-      );
+      ), onWillPop: () async{
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context)=> BlocProvider(create: (context) => CubitApp()..getUser()..changeCurrentIndexBottom(4),child:  DashboardScreen()))
+        );
+        return true;
+      });
     }, listener: (context, state){
 
        if(state is StateAppGetUserSuccess){

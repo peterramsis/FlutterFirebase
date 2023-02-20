@@ -26,9 +26,9 @@ void main() async{
   print("---- ${uid}");
 
   if( uid != null){
-    widget =  DashboardScreen();
+    widget =  const DashboardScreen();
   }else{
-    widget = RegisterWidget();
+    widget = const RegisterWidget();
   }
 
   print(widget);
@@ -58,8 +58,8 @@ class MyApp extends StatelessWidget {
           // in the middle of the parent.
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) =>  CubitAuth()),
-              BlocProvider(create: (_) => CubitApp()..getUser(),)
+              BlocProvider(create: (BuildContext context) =>  CubitAuth()),
+              BlocProvider(create: (BuildContext context) => CubitApp()..getUser())
             ],
             child:  BlocConsumer<CubitApp,StatesApp>(
               builder: (context,state){

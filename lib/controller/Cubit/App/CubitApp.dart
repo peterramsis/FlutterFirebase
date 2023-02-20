@@ -107,9 +107,10 @@ class CubitApp extends Cubit<StatesApp>
      emit(StateAppProfilePictureUploadloading());
       final storage =  FirebaseStorage.instance.ref().child("user/${Uri.file(imageProfile!.path).pathSegments.last}").putFile(imageProfile!).then(((value){
          value.ref.getDownloadURL().then((value) {
-           emit(StateAppProfilePictureUploadSuccess());
            pathImageProfile = value;
            print(pathImageProfile);
+           emit(StateAppProfilePictureUploadSuccess());
+
          }).catchError((err)=> emit(StateAppProfileUpdateError(err.toString())));
       })).catchError((err){
         emit(StateAppProfilePictureUploadError(err.toString()));
@@ -117,33 +118,36 @@ class CubitApp extends Cubit<StatesApp>
    }
 
    
-   updateProfile() async{
+   updateProfile(){
 
 
      if(imageProfile != null){
-       await uploadProfileImage();
+        uploadProfileImage();
 
-      print( pathImageProfile != "" ?  pathImageProfile: userModel?.cover);
+      print( "test upload ${pathImageProfile != "" ?  pathImageProfile: userModel?.cover}");
      }
 
 
      emit(StateAppProfileUpdateLoading());
 
 
+     UserModel model  = UserModel.fromJson(
+         {
+           "name": name.text,
+           "phone" : userModel?.phone,
+           "bio": bio.text,
+           "email": userModel?.email,
+           "address" : userModel?.address,
+           "cover":   pathImageProfile != "" ?  pathImageProfile: userModel?.image,
+           "image":   pathImageProfile != "" ?  pathImageProfile: userModel?.image,
+           "uid" : userModel?.uid
+         }
+     );
+
+     print("test here----${ pathImageProfile != "" ?  pathImageProfile: userModel?.image}");
 
 
-     print(userModel?.toMap());
-     FirebaseFirestore.instance.collection("users").doc(userModel?.uid).update( {
-       "name": name.text,
-       "phone" : userModel?.phone,
-       "bio": bio.text,
-       "email": userModel?.email,
-       "address" : userModel?.address,
-       "cover":  userModel?.cover,
-       "image":  pathImageProfile != "" ?  pathImageProfile: userModel?.image,
-       "uid" : userModel?.uid
-     }).then((value){
-       emit(StateAppGetUserSuccess(userModel!));
+     FirebaseFirestore.instance.collection("users").doc(userModel?.uid).update(model.toMap()).then((value){
        getUser();
        print(userModel?.name);
       }).catchError((err){
