@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:firebase_app/Model/Post.dart';
 import 'package:firebase_app/Model/User.dart';
 import 'package:firebase_app/controller/Cubit/App/StatesApp.dart';
 import 'package:firebase_app/views/screens/add_post_screen.dart';
@@ -29,6 +30,7 @@ class CubitApp extends Cubit<StatesApp>
   var  picker = ImagePicker();
   File? imageProfile;
    File? imageCover;
+   Post? postModel;
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController bio = TextEditingController();
@@ -103,42 +105,47 @@ class CubitApp extends Cubit<StatesApp>
 
    String? pathImageProfile = "";
 
-   uploadProfileImage() {
+   uploadProfileImage(){
      emit(StateAppProfilePictureUploadloading());
-      final storage =  FirebaseStorage.instance.ref().child("user/${Uri.file(imageProfile!.path).pathSegments.last}").putFile(imageProfile!).then(((value){
-         value.ref.getDownloadURL().then((value) {
-           pathImageProfile = value;
+       FirebaseStorage.instance.ref().child("user/${Uri.file(imageProfile!.path).pathSegments.last}").putFile(imageProfile!).then(((value){
+         value.ref.getDownloadURL().then((value) async{
+           pathImageProfile = await value;
            print(pathImageProfile);
            emit(StateAppProfilePictureUploadSuccess());
-
          }).catchError((err)=> emit(StateAppProfileUpdateError(err.toString())));
       })).catchError((err){
         emit(StateAppProfilePictureUploadError(err.toString()));
       });
    }
 
-   
+
+   String? pathImageCover = "";
+
+   uploadProfileCover(){
+     emit(StateAppProfilePictureUploadloading());
+     FirebaseStorage.instance.ref().child("user/${Uri.file(imageCover!.path).pathSegments.last}").putFile(imageCover!).then(((value){
+       value.ref.getDownloadURL().then((value) async{
+         pathImageCover = await value;
+         print(pathImageCover);
+         emit(StateAppProfilePictureUploadSuccess());
+       }).catchError((err)=> emit(StateAppProfileUpdateError(err.toString())));
+     })).catchError((err){
+       emit(StateAppProfilePictureUploadError(err.toString()));
+     });
+   }
+
+
    updateProfile(){
 
-
-     if(imageProfile != null){
-        uploadProfileImage();
-
-      print( "test upload ${pathImageProfile != "" ?  pathImageProfile: userModel?.cover}");
-     }
-
-
      emit(StateAppProfileUpdateLoading());
-
-
-     UserModel model  = UserModel.fromJson(
+     userModel  = UserModel.fromJson(
          {
            "name": name.text,
            "phone" : userModel?.phone,
            "bio": bio.text,
            "email": userModel?.email,
            "address" : userModel?.address,
-           "cover":   pathImageProfile != "" ?  pathImageProfile: userModel?.image,
+           "cover":   pathImageCover != "" ?  pathImageCover: userModel?.image,
            "image":   pathImageProfile != "" ?  pathImageProfile: userModel?.image,
            "uid" : userModel?.uid
          }
@@ -146,13 +153,33 @@ class CubitApp extends Cubit<StatesApp>
 
      print("test here----${ pathImageProfile != "" ?  pathImageProfile: userModel?.image}");
 
-
-     FirebaseFirestore.instance.collection("users").doc(userModel?.uid).update(model.toMap()).then((value){
+     FirebaseFirestore.instance.collection("users").doc(userModel?.uid).update(userModel!.toMap()).then((value){
        getUser();
        print(userModel?.name);
       }).catchError((err){
        print(err);
      });
+   }
+
+   createPost({
+     required String text,
+     required String dateTime,
+     required String postImage
+}){
+     emit(StatePostCreateLoading());
+     postModel = Post(
+       uid: userModel?.uid,
+       name: userModel?.name,
+       text: text,
+       dateTime: dateTime,
+       image: userModel?.image,
+       postImage: ""
+     );
+
+     FirebaseFirestore.instance.collection("post").add(postModel!.toMap()).then((value){
+       emit(StateAppPostCreateSuccess(postModel!));
+     }).catchError((err)=> StateAppPostCreateError());
+
    }
 
 }

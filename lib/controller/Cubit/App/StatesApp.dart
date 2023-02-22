@@ -1,3 +1,4 @@
+import 'package:firebase_app/Model/Post.dart';
 import 'package:firebase_app/Model/User.dart';
 
 abstract class StatesApp{}
@@ -27,3 +28,11 @@ class StateAppProfileUpdateError extends StatesApp{
 }
 class StateAppProfileUpdateLoading extends StatesApp{}
 class StateAppProfileUpdateSuccess extends StatesApp{}
+
+class StateAppPostCreateError extends StatesApp{}
+class StateAppPostCreateSuccess  extends StatesApp{
+  Post post;
+  StateAppPostCreateSuccess(this.post);
+}
+
+class StatePostCreateLoading extends StatesApp{}

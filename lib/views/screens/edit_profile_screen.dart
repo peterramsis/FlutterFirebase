@@ -31,7 +31,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             title: Text("Edit Profile"),
             centerTitle: true ),
         body: ConditionalBuilder(
-          condition: state is! StateAppGetUserLoading && CubitApp.get(context).userModel != null,
+          condition: state is! StateAppGetUserLoading && state is ! StateAppProfilePictureUploadloading && CubitApp.get(context).userModel != null,
           builder: (context){
 
             var userModel = CubitApp.get(context).userModel;
@@ -86,9 +86,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: Icon(Icons.camera),
                           ))
                         ],
-                      )
+                      ),
+
+
                     ],
                   ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if(CubitApp.get(context).imageProfile != null)
+                      ElevatedButton(onPressed: ()=>CubitApp.get(context).uploadProfileImage(), child: Text("Upload picture")),
+                    SizedBox(width: 10,),
+                    if(CubitApp.get(context).imageCover != null)
+                      ElevatedButton(onPressed: ()=>CubitApp.get(context).uploadProfileCover(), child: Text("Upload cover")),
+                  ],
                 ),
                 Padding(padding: EdgeInsets.all(10), child: Form(child: Column(children: [
                   TextFormField(
