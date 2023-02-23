@@ -15,6 +15,12 @@ class StateAppProfilePicturePickedSuccess extends StatesApp{}
 class StateAppProfilePicturePickedloading extends StatesApp{}
 class StateAppProfilePicturePickedError extends StatesApp{}
 
+
+
+class StateAppPostPicturePickedSuccess extends StatesApp{}
+class StateAppPostPicturePickedloading extends StatesApp{}
+class StateAppPostPicturePickedError extends StatesApp{}
+
 class StateAppProfilePictureUploadSuccess extends StatesApp{}
 class StateAppProfilePictureUploadloading extends StatesApp{}
 class StateAppProfilePictureUploadError extends StatesApp{

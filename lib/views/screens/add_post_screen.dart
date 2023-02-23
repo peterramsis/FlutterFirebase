@@ -12,6 +12,7 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
+  TextEditingController text = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CubitApp, StatesApp>(
@@ -48,6 +49,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 ],
               ),
               Expanded(child:  TextFormField(
+                controller: text,
                decoration: InputDecoration(
                    hintText: "What is on your mind",
                  border: InputBorder.none
@@ -73,7 +75,23 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     ],
                   )))
                 ],),
-              ElevatedButton(onPressed: ()=>CubitApp.get(context).createPost(text: "peererrer", dateTime: "9083838", postImage: ""), child: Text("save"))
+              Container(
+                width: MediaQuery.of(context).size.width,
+
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      
+                      child: Image.network("https://img.freepik.com/free-photo/tea-pickers-working-kerela-india_53876-42847.jpg" , fit: BoxFit.cover,)
+                    ),
+                    IconButton(onPressed: ()=>{}, icon: CircleAvatar(
+                      child: Icon(Icons.close),
+                    )),
+                  ],
+                ),
+              ),
+              ElevatedButton(onPressed: ()=>CubitApp.get(context).createPost(text: text.text, dateTime: "9083838", postImage: ""), child: Text("save"))
             ],
           ),
         );

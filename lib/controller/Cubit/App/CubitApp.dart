@@ -30,6 +30,7 @@ class CubitApp extends Cubit<StatesApp>
   var  picker = ImagePicker();
   File? imageProfile;
    File? imageCover;
+   File? imagePost;
    Post? postModel;
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
@@ -98,6 +99,19 @@ class CubitApp extends Cubit<StatesApp>
        emit(StateAppProfilePicturePickedSuccess());
      }else{
        emit(StateAppProfilePicturePickedError());
+     }
+
+
+   }
+
+   Future<void> getImagePost() async{
+     var image = await picker.pickImage(source: ImageSource.gallery);
+
+     if(image  != null){
+       imagePost = File(image.path);
+       emit(StateAppPostPicturePickedSuccess());
+     }else{
+       emit(StateAppPostPicturePickedError());
      }
 
 
