@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:firebase_app/Model/MessageModel.dart';
 import 'package:firebase_app/Model/Post.dart';
 import 'package:firebase_app/Model/User.dart';
 import 'package:firebase_app/controller/Cubit/App/StatesApp.dart';
@@ -32,6 +33,10 @@ class CubitApp extends Cubit<StatesApp>
    File? imageCover;
    File? imagePost;
    Post? postModel;
+   List<Post> posts = [];
+   List postsId = [];
+   List<int> postLike = [];
+   List<UserModel> users = [];
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController bio = TextEditingController();
@@ -62,6 +67,10 @@ class CubitApp extends Cubit<StatesApp>
 
   changeCurrentIndexBottom(int index){
     currentIndexBottom = index;
+    if(index == 1){
+      print("index 1");
+      getAllUsers();
+    }
     emit(StateAppChangeBottomNavigationBar());
   }
 
@@ -117,6 +126,12 @@ class CubitApp extends Cubit<StatesApp>
 
    }
 
+   removeImagePost(){
+      imagePost = null;
+      emit(StateAppPostPicturePickedSuccess());
+
+   }
+
    String? pathImageProfile = "";
 
    uploadProfileImage(){
@@ -130,6 +145,27 @@ class CubitApp extends Cubit<StatesApp>
       })).catchError((err){
         emit(StateAppProfilePictureUploadError(err.toString()));
       });
+   }
+
+
+   uploadAndCreatePost({
+     required String text,
+     required String dateTime,
+}){
+    if(imagePost != null){
+      emit(StateAppProfilePictureUploadloading());
+      FirebaseStorage.instance.ref().child("post/${Uri.file(imagePost!.path).pathSegments.last}").putFile(imagePost!).then(((value){
+        value.ref.getDownloadURL().then((value) async{
+          createPost(text: text, dateTime: dateTime, image: value);
+
+          emit(StateAppProfilePictureUploadSuccess());
+        }).catchError((err)=> emit(StateAppProfileUpdateError(err.toString())));
+      })).catchError((err){
+        emit(StateAppProfilePictureUploadError(err.toString()));
+      });
+    }else{
+      createPost(text: text, dateTime: dateTime, image: "");
+    }
    }
 
 
@@ -178,22 +214,95 @@ class CubitApp extends Cubit<StatesApp>
    createPost({
      required String text,
      required String dateTime,
-     required String postImage
-}){
+     required String image
+}) async{
      emit(StatePostCreateLoading());
+
      postModel = Post(
        uid: userModel?.uid,
        name: userModel?.name,
        text: text,
        dateTime: dateTime,
        image: userModel?.image,
-       postImage: ""
+       postImage: image
      );
 
-     FirebaseFirestore.instance.collection("post").add(postModel!.toMap()).then((value){
+
+    await FirebaseFirestore.instance.collection("post").add(postModel!.toMap()).then((value){
        emit(StateAppPostCreateSuccess(postModel!));
      }).catchError((err)=> StateAppPostCreateError());
 
+   }
+   
+   getPost(){
+     emit(StateAppPostGetLoading());
+     FirebaseFirestore.instance.collection("post").get().then((value){
+       value.docs.forEach((element) {
+         element.reference.collection("likes").get().then((value){
+           posts.add(Post.fromJson(element.data()));
+           postsId.add(element.id);
+           postLike.add(value.docs.length);
+         });
+
+         emit(StateAppPostGetSuccess(posts , postsId));
+
+       });
+     }).catchError((err)=>print(err));
+   }
+   
+   likePost(String postId){
+     emit(StateAppPostLikeLoading());
+     FirebaseFirestore.instance.collection("post").doc(postId).collection("likes").doc(userModel?.uid).set({
+       'like': true
+     }).then((value) => emit(StateAppPostLikeSuccess())).catchError((err)=> emit(StateAppPostLikeError()));
+   }
+
+   getAllUsers(){
+     emit(StateAppGetUsersLoading());
+     users = [];
+     FirebaseFirestore.instance.collection("users").get().then((value){
+       value.docs.forEach((element) {
+
+          if(element.id != userModel!.uid)
+            users.add(UserModel.fromJson(element.data()));
+            emit(StateAppGetUsersSuccess(users));
+       });
+     }).catchError((err){
+       emit(StateAppGetUsersError(err.toString()));
+     });
+   }
+
+
+   void sendMessage({
+     required String receiverId,
+     required String dataTime,
+     required String text,
+   }){
+
+     MessageModel model = MessageModel(
+       dateTime: dataTime,
+       text:  text,
+       receiverId: receiverId,
+       senderId: userModel!.uid
+     );
+
+     FirebaseFirestore.instance.collection("users")
+         .doc(userModel?.uid)
+         .collection("chats")
+         .doc(receiverId).collection("messages").add(model.toMap()).then((value){
+
+       }).catchError((err){
+
+      });
+
+     FirebaseFirestore.instance.collection("users")
+         .doc(receiverId)
+         .collection("chats")
+         .doc(userModel!.uid).collection("messages").add(model.toMap()).then((value){
+
+     }).catchError((err){
+
+     });
    }
 
 }

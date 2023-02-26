@@ -110,7 +110,7 @@ class LoginWidget extends StatelessWidget {
                   ),),
                 )));
       }else if(state is StatesLoginSuccess){
-         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => BlocProvider<CubitApp>(create: (context) => CubitApp()..getUser()) ));
+         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => BlocProvider(create: (context) => CubitApp()..getUser()..getAllUsers()..getPost(),child: DashboardScreen()), ));
       }
 
     }));

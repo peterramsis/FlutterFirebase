@@ -129,7 +129,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 Expanded(child: OutlinedButton(child: Text("Add Photo"),onPressed: (){
 
-                                  print(userModel?.name);
+                                  CubitApp.get(context).getUser();
+
                                 },)),
                                 SizedBox(
                                   width: 10,

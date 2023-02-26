@@ -17,6 +17,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<CubitApp, StatesApp>(
       builder: (context,state) {
+        dynamic? imagePost = CubitApp.get(context).imagePost;
         return  Container(
           padding: EdgeInsets.all(10),
           height: MediaQuery.of(context).size.height,
@@ -58,7 +59,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(child: TextButton(onPressed: ()=>{}, child: Row(
+                  Expanded(child: TextButton(onPressed: ()=> CubitApp.get(context).getImagePost(), child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -75,23 +76,26 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     ],
                   )))
                 ],),
-              Container(
+              if(imagePost != null)
+                Container(
                 width: MediaQuery.of(context).size.width,
 
                 child: Stack(
                   alignment: Alignment.topRight,
                   children: [
-                    Container(
-                      
-                      child: Image.network("https://img.freepik.com/free-photo/tea-pickers-working-kerela-india_53876-42847.jpg" , fit: BoxFit.cover,)
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height:200,
+                      child: Image.file(imagePost! , fit: BoxFit.cover,)
                     ),
-                    IconButton(onPressed: ()=>{}, icon: CircleAvatar(
-                      child: Icon(Icons.close),
-                    )),
+                      IconButton(onPressed: ()=>CubitApp.get(context).removeImagePost(), icon: CircleAvatar(
+                        backgroundColor: Colors.red,
+                        child: Icon(Icons.close, color: Colors.white),
+                      )),
                   ],
                 ),
               ),
-              ElevatedButton(onPressed: ()=>CubitApp.get(context).createPost(text: text.text, dateTime: "9083838", postImage: ""), child: Text("save"))
+              ElevatedButton(onPressed: ()=>CubitApp.get(context).uploadAndCreatePost(text: text.text, dateTime: DateTime.now().toString()), child: Text("save"))
             ],
           ),
         );

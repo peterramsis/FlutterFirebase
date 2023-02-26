@@ -42,3 +42,25 @@ class StateAppPostCreateSuccess  extends StatesApp{
 }
 
 class StatePostCreateLoading extends StatesApp{}
+
+class StateAppPostGetError extends StatesApp{}
+class StateAppPostGetSuccess extends StatesApp{
+  List<Post> post;
+  List postsId;
+  StateAppPostGetSuccess(this.post , this.postsId);
+}
+class StateAppPostGetLoading extends StatesApp{}
+class StateAppPostLikeSuccess extends StatesApp{}
+class StateAppPostLikeLoading extends StatesApp{}
+class StateAppPostLikeError extends StatesApp{}
+
+
+class StateAppGetUsersSuccess extends StatesApp{
+  List<UserModel> users;
+  StateAppGetUsersSuccess(this.users);
+}
+class StateAppGetUsersLoading extends StatesApp{}
+class StateAppGetUsersError extends StatesApp{
+  String error;
+  StateAppGetUsersError(this.error);
+}

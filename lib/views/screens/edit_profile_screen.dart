@@ -24,7 +24,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               icon: Icon(Icons.arrow_back_ios),
               onPressed: (){
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context)=> BlocProvider(create: (context) => CubitApp()..getUser()..changeCurrentIndexBottom(4),child:  DashboardScreen()))
+                  MaterialPageRoute(builder: (context)=> BlocProvider(create: (context) => CubitApp()..getUser()..getAllUsers()..getPost()..changeCurrentIndexBottom(4),child:  DashboardScreen()))
                 );
               },
             ),
@@ -161,7 +161,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ), onWillPop: () async{
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context)=> BlocProvider(create: (context) => CubitApp()..getUser()..changeCurrentIndexBottom(4),child:  DashboardScreen()))
+            MaterialPageRoute(builder: (context)=> BlocProvider(create: (context) => CubitApp()..getUser()..getPost()..getAllUsers()..changeCurrentIndexBottom(4),child:  DashboardScreen()))
         );
         return true;
       });
