@@ -1,3 +1,4 @@
+import 'package:firebase_app/Model/MessageModel.dart';
 import 'package:firebase_app/Model/Post.dart';
 import 'package:firebase_app/Model/User.dart';
 
@@ -63,4 +64,13 @@ class StateAppGetUsersLoading extends StatesApp{}
 class StateAppGetUsersError extends StatesApp{
   String error;
   StateAppGetUsersError(this.error);
+}
+
+class StateAppGeMessagesSuccess extends StatesApp{
+
+}
+class StateAppGetMessagesLoading extends StatesApp{}
+class StateAppGetMessagesError extends StatesApp{
+  String error;
+  StateAppGetMessagesError(this.error);
 }

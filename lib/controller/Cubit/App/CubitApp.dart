@@ -36,6 +36,7 @@ class CubitApp extends Cubit<StatesApp>
    List<Post> posts = [];
    List postsId = [];
    List<int> postLike = [];
+   List<MessageModel> messages = [];
    List<UserModel> users = [];
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
@@ -303,6 +304,22 @@ class CubitApp extends Cubit<StatesApp>
      }).catchError((err){
 
      });
+   }
+   
+   
+   void getMessage(String receiverId){
+     emit(StateAppGetMessagesLoading());
+     messages = [];
+     FirebaseFirestore.instance.collection("users").doc(userModel!.uid).collection("chats").doc(receiverId).collection("messages").snapshots().listen((event) {
+         event.docs.forEach((element)  {
+           messages.add(MessageModel.fromJson(element.data()));
+
+        });
+         print("----------------${messages.length}");
+         emit(StateAppGeMessagesSuccess());
+
+     });
+
    }
 
 }

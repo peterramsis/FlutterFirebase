@@ -36,8 +36,9 @@ class _ChatScreenState extends State<ChatScreen> {
       return InkWell(
         onTap: (){
           dynamic user =  CubitApp.get(context).users[index];
+          String receiverId = CubitApp.get(context).users[index].uid.toString();
           print("go");
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> BlocProvider(create: (context)=>CubitApp()..getUser() , child: ChatDetailsScreen(user!), )));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> BlocProvider(create: (context)=>CubitApp()..getUser(), child: ChatDetailsScreen(user!), )));
         },
         child: Container(
           child: Column(
